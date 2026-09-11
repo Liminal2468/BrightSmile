@@ -1,0 +1,469 @@
+<div class="records-toolbar">
+    <input type="text" id="rec-search" class="search" placeholder="Search records...">
+    <button id="rec-filter-btn" class="rec-btn" type="button">Filter</button>
+    <button id="rec-add-btn" class="rec-btn rec-btn-accent" type="button">Add record</button>
+</div>
+
+<div id="rec-list" class="grid rec-grid"></div>
+
+<dialog id="rec-filter-modal" class="rec-modal">
+    <form id="rec-filter-form" class="rec-form">
+        <h3>Filter search</h3>
+        <label for="rec-filter-field">Search in</label>
+        <select id="rec-filter-field">
+            <option value="all">All fields</option>
+            <option value="name">Name</option>
+            <option value="age">Age</option>
+            <option value="date">Date</option>
+            <option value="notes">Notes</option>
+        </select>
+        <div class="rec-modal-actions">
+            <button type="button" id="rec-filter-cancel">Cancel</button>
+            <button type="submit" class="rec-btn-accent">Apply</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="rec-add-modal" class="rec-modal">
+    <form id="rec-add-form" class="rec-form">
+        <h3>Add record</h3>
+        <label for="rec-add-name">Name</label>
+        <input id="rec-add-name" type="text" required>
+        <label for="rec-add-age">Age</label>
+        <input id="rec-add-age" type="number" min="0" required>
+        <label for="rec-add-date">Date</label>
+        <input id="rec-add-date" type="date" required>
+        <label for="rec-add-notes">Notes</label>
+        <textarea id="rec-add-notes" rows="3"></textarea>
+        <div class="rec-modal-actions">
+            <button type="button" id="rec-add-cancel">Cancel</button>
+            <button type="submit" class="rec-btn-accent">Save</button>
+        </div>
+    </form>
+</dialog>
+
+<style>
+    .records-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .records-toolbar .search {
+        margin-bottom: 0;
+        width: auto;
+        flex: 1 1 auto;
+        max-width: 420px;
+    }
+
+    .rec-btn {
+        min-height: 2.25rem;
+        padding: 0.4rem 0.9rem;
+        border: 1px solid var(--border-soft, #cdece4);
+        border-radius: 0.5rem;
+        background: var(--white, #fff);
+        color: var(--text-page, #123c38);
+        font: inherit;
+        cursor: pointer;
+        flex: 0 0 auto;
+    }
+
+    .rec-btn:hover {
+        background: var(--accent-tint, #eafaf3);
+    }
+
+    .rec-btn-accent {
+        border-color: var(--accent, #0f9a9a) !important;
+        background: var(--accent, #0f9a9a) !important;
+        color: #fff;
+    }
+
+    .rec-grid {
+        align-items: flex-start;
+    }
+
+    .rec-card {
+        position: relative;
+        width: calc(50% - 10px);
+        cursor: pointer;
+        transition: box-shadow 0.15s ease;
+    }
+
+    .rec-card:hover {
+        box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+    }
+
+    .rec-body {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .rec-body p {
+        color: #567b76;
+        font-size: 0.9rem;
+    }
+
+    .rec-expand-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        border: none;
+        background: none;
+        font-size: 1rem;
+        color: var(--accent, #0f9a9a);
+        cursor: pointer;
+        transition: transform 0.15s ease;
+    }
+
+    .rec-card.rec-expanded .rec-expand-btn {
+        transform: rotate(180deg);
+    }
+
+    .rec-details {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-soft, #cdece4);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .rec-details p {
+        font-size: 0.9rem;
+    }
+
+    .rec-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    .rec-actions button {
+        font: inherit;
+        padding: 0.3rem 0.7rem;
+        border-radius: 0.4rem;
+        border: 1px solid var(--border-soft, #cdece4);
+        background: #fff;
+        cursor: pointer;
+    }
+
+    .rec-edit-btn:hover {
+        background: var(--accent-tint, #eafaf3);
+    }
+
+    .rec-delete-btn {
+        border-color: #e2a5a0 !important;
+        color: #b3392f;
+    }
+
+    .rec-delete-btn:hover {
+        background: #fdeceb;
+    }
+
+    .rec-edit-fields {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .rec-edit-fields label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #567b76;
+    }
+
+    .rec-edit-fields input,
+    .rec-edit-fields textarea {
+        width: 100%;
+        border: 1px solid var(--border-soft, #cdece4);
+        border-radius: 0.4rem;
+        padding: 0.4rem;
+        font: inherit;
+        resize: vertical;
+    }
+
+    .rec-empty {
+        color: #7c9d97;
+        padding: 20px 0;
+    }
+
+    .rec-modal {
+        width: min(90vw, 24rem);
+        padding: 0;
+        border: 0;
+        border-radius: 0.8rem;
+        box-shadow: 0 1rem 3rem rgb(0 0 0 / 30%);
+    }
+
+    .rec-modal::backdrop {
+        background: rgb(0 0 0 / 42%);
+    }
+
+    .rec-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        padding: 1.3rem;
+    }
+
+    .rec-form h3 {
+        margin: 0 0 0.2rem;
+        color: var(--text-page, #123c38);
+    }
+
+    .rec-form select,
+    .rec-form input,
+    .rec-form textarea {
+        width: 100%;
+        border: 1px solid var(--border-soft, #cdece4);
+        border-radius: 0.4rem;
+        padding: 0.5rem;
+        font: inherit;
+        resize: vertical;
+    }
+
+    .rec-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        margin-top: 0.4rem;
+    }
+
+    .rec-modal-actions button {
+        border: 1px solid var(--border-soft, #cdece4);
+        background: #fff;
+        border-radius: 0.4rem;
+        padding: 0.4rem 0.9rem;
+        cursor: pointer;
+        font: inherit;
+    }
+
+    @media (max-width: 700px) {
+        .rec-card { width: 100%; }
+    }
+</style>
+
+<script>
+(() => {
+    const STORAGE_KEY = 'clinicRecords';
+    const DEFAULT_RECORDS = [
+        { id: 1, name: "John Doe", age: 32, date: "2026-09-06", notes: "Routine cleaning" },
+        { id: 2, name: "Jane Smith", age: 45, date: "2026-09-07", notes: "Cavity check" }
+    ];
+
+    const list = document.getElementById('rec-list');
+    const searchInput = document.getElementById('rec-search');
+
+    const filterBtn = document.getElementById('rec-filter-btn');
+    const filterModal = document.getElementById('rec-filter-modal');
+    const filterForm = document.getElementById('rec-filter-form');
+    const filterFieldSelect = document.getElementById('rec-filter-field');
+    const filterCancel = document.getElementById('rec-filter-cancel');
+
+    const addBtn = document.getElementById('rec-add-btn');
+    const addModal = document.getElementById('rec-add-modal');
+    const addForm = document.getElementById('rec-add-form');
+    const addCancel = document.getElementById('rec-add-cancel');
+
+    let records = loadRecords();
+    let searchQuery = '';
+    let filterField = 'all';
+    const expandedIds = new Set();
+    let editingId = null;
+
+    function loadRecords() {
+        try {
+            const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            return Array.isArray(stored) ? stored : DEFAULT_RECORDS.slice();
+        } catch {
+            return DEFAULT_RECORDS.slice();
+        }
+    }
+
+    function saveRecords() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    }
+
+    function matchesQuery(record) {
+        if (!searchQuery) return true;
+        const q = searchQuery.toLowerCase();
+        if (filterField === 'all') {
+            return [record.name, record.age, record.date, record.notes]
+                .some(value => String(value ?? '').toLowerCase().includes(q));
+        }
+        return String(record[filterField] ?? '').toLowerCase().includes(q);
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const d = new Date(dateStr + 'T00:00:00');
+        if (isNaN(d)) return dateStr;
+        return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+
+    function render() {
+        list.innerHTML = '';
+        const visible = records.filter(matchesQuery);
+
+        if (!visible.length) {
+            const empty = document.createElement('p');
+            empty.className = 'rec-empty';
+            empty.textContent = 'No records match your search.';
+            list.appendChild(empty);
+            return;
+        }
+
+        visible.forEach(record => list.appendChild(
+            editingId === record.id ? buildEditCard(record) : buildCard(record)
+        ));
+    }
+
+    function buildCard(record) {
+        const expanded = expandedIds.has(record.id);
+
+        const card = document.createElement('div');
+        card.className = 'card rec-card' + (expanded ? ' rec-expanded' : '');
+
+        card.innerHTML = `
+            <div class="photo"></div>
+            <div class="rec-body">
+                <h4>${escapeHtml(record.name)}</h4>
+                <p>Age: ${escapeHtml(record.age)}</p>
+                <p>Notes: ${escapeHtml(record.notes || '—')}</p>
+                ${expanded ? `
+                    <div class="rec-details">
+                        <p><strong>Date:</strong> ${escapeHtml(formatDate(record.date))}</p>
+                        <div class="rec-actions">
+                            <button type="button" class="rec-edit-btn">Edit</button>
+                            <button type="button" class="rec-delete-btn">Delete</button>
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+            <button type="button" class="rec-expand-btn" aria-label="Expand record">&#9662;</button>
+        `;
+
+        card.addEventListener('click', event => {
+            if (event.target.closest('.rec-edit-btn') || event.target.closest('.rec-delete-btn')) return;
+            expanded ? expandedIds.delete(record.id) : expandedIds.add(record.id);
+            render();
+        });
+
+        const editBtn = card.querySelector('.rec-edit-btn');
+        if (editBtn) editBtn.addEventListener('click', event => {
+            event.stopPropagation();
+            editingId = record.id;
+            render();
+        });
+
+        const deleteBtn = card.querySelector('.rec-delete-btn');
+        if (deleteBtn) deleteBtn.addEventListener('click', event => {
+            event.stopPropagation();
+            if (!confirm(`Delete the record for ${record.name}?`)) return;
+            records = records.filter(r => r.id !== record.id);
+            expandedIds.delete(record.id);
+            saveRecords();
+            render();
+        });
+
+        return card;
+    }
+
+    function buildEditCard(record) {
+        const card = document.createElement('div');
+        card.className = 'card rec-card rec-expanded';
+
+        card.innerHTML = `
+            <div class="photo"></div>
+            <div class="rec-body">
+                <div class="rec-edit-fields">
+                    <label>Name</label>
+                    <input class="rec-edit-name" type="text" value="${escapeAttr(record.name)}" required>
+                    <label>Age</label>
+                    <input class="rec-edit-age" type="number" min="0" value="${escapeAttr(record.age)}" required>
+                    <label>Date</label>
+                    <input class="rec-edit-date" type="date" value="${escapeAttr(record.date)}" required>
+                    <label>Notes</label>
+                    <textarea class="rec-edit-notes" rows="3">${escapeHtml(record.notes || '')}</textarea>
+                    <div class="rec-actions">
+                        <button type="button" class="rec-edit-btn">Save</button>
+                        <button type="button" class="rec-delete-btn rec-edit-cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        card.addEventListener('click', event => event.stopPropagation());
+
+        card.querySelector('.rec-edit-btn').addEventListener('click', () => {
+            record.name = card.querySelector('.rec-edit-name').value.trim() || record.name;
+            record.age = card.querySelector('.rec-edit-age').value;
+            record.date = card.querySelector('.rec-edit-date').value;
+            record.notes = card.querySelector('.rec-edit-notes').value.trim();
+            editingId = null;
+            saveRecords();
+            render();
+        });
+
+        card.querySelector('.rec-edit-cancel').addEventListener('click', () => {
+            editingId = null;
+            render();
+        });
+
+        return card;
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, ch => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[ch]));
+    }
+
+    function escapeAttr(value) {
+        return escapeHtml(value);
+    }
+
+    // Search matches across every field unless narrowed via Filter
+    searchInput.addEventListener('input', () => {
+        searchQuery = searchInput.value.trim();
+        render();
+    });
+
+    // Filter modal
+    filterBtn.addEventListener('click', () => filterModal.showModal());
+    filterCancel.addEventListener('click', () => filterModal.close());
+    filterForm.addEventListener('submit', event => {
+        event.preventDefault();
+        filterField = filterFieldSelect.value;
+        filterModal.close();
+        render();
+    });
+    filterModal.addEventListener('click', event => {
+        if (event.target === filterModal) filterModal.close();
+    });
+
+    // Add record modal
+    addBtn.addEventListener('click', () => addModal.showModal());
+    addCancel.addEventListener('click', () => addModal.close());
+    addModal.addEventListener('click', event => {
+        if (event.target === addModal) addModal.close();
+    });
+    addForm.addEventListener('submit', event => {
+        event.preventDefault();
+        records.push({
+            id: Date.now(),
+            name: document.getElementById('rec-add-name').value.trim(),
+            age: document.getElementById('rec-add-age').value,
+            date: document.getElementById('rec-add-date').value,
+            notes: document.getElementById('rec-add-notes').value.trim()
+        });
+        saveRecords();
+        addForm.reset();
+        addModal.close();
+        render();
+    });
+
+    render();
+})();
+</script>

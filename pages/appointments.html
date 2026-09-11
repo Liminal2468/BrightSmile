@@ -1,0 +1,109 @@
+<input type="text" class="search" id="appt-search" placeholder="Search appointments...">
+
+<div class="appt-list">
+    <div class="appt-item" data-name="John Doe">
+        <div class="appt-time">9:00 AM</div>
+        <div class="appt-info">
+            <h4>John Doe</h4>
+            <p>Routine cleaning</p>
+        </div>
+        <span class="appt-status confirmed">Confirmed</span>
+    </div>
+
+    <div class="appt-item" data-name="Jane Smith">
+        <div class="appt-time">10:30 AM</div>
+        <div class="appt-info">
+            <h4>Jane Smith</h4>
+            <p>Cavity check</p>
+        </div>
+        <span class="appt-status pending">Pending</span>
+    </div>
+
+    <div class="appt-item" data-name="Mark Rivera">
+        <div class="appt-time">1:00 PM</div>
+        <div class="appt-info">
+            <h4>Mark Rivera</h4>
+            <p>Tooth extraction follow-up</p>
+        </div>
+        <span class="appt-status confirmed">Confirmed</span>
+    </div>
+</div>
+
+<style>
+    .appt-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .appt-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: var(--bg-sidebar, #fff);
+        border: 1px solid var(--border-soft, #cdece4);
+        border-radius: 8px;
+        padding: 12px 16px;
+        box-shadow: 0 1px 3px rgb(0 0 0 / 6%);
+    }
+
+    .appt-time {
+        flex: 0 0 auto;
+        min-width: 4.5rem;
+        font-weight: 700;
+        color: var(--accent, #0f9a9a);
+    }
+
+    .appt-info {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .appt-info h4 {
+        margin: 0 0 2px;
+        color: var(--text-page, #123c38);
+    }
+
+    .appt-info p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #567b76;
+    }
+
+    .appt-status {
+        flex: 0 0 auto;
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 999px;
+    }
+
+    .appt-status.confirmed {
+        background: var(--accent-tint, #eafaf3);
+        color: var(--accent, #0f9a9a);
+    }
+
+    .appt-status.pending {
+        background: #fff3d6;
+        color: #9a7300;
+    }
+
+    .appt-item.appt-hidden {
+        display: none;
+    }
+</style>
+
+<script>
+(() => {
+    const searchInput = document.getElementById('appt-search');
+    const items = document.querySelectorAll('.appt-item');
+
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        items.forEach(item => {
+            const matches = item.dataset.name.toLowerCase().includes(query);
+            item.classList.toggle('appt-hidden', query.length > 0 && !matches);
+        });
+    });
+})();
+</script>
