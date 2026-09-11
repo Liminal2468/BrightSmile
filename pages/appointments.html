@@ -1,0 +1,857 @@
+<div class="appointments-page">
+
+    <div class="appointments-toolbar">
+        <input type="text" class="search" id="appt-search" placeholder="Search appointments...">
+
+        <button id="appt-filter-btn" class="appt-btn" type="button">Filter</button>
+
+        <button id="appt-add-btn" class="appt-btn appt-btn-accent" type="button">
+            Add appointment
+        </button>
+    </div>
+
+    <div class="appt-day-toolbar">
+        <button id="appt-prev-day" class="appt-day-btn" type="button" aria-label="Previous day">
+            &#8249;
+        </button>
+
+        <input type="date" id="appt-date" class="appt-date">
+
+        <button id="appt-next-day" class="appt-day-btn" type="button" aria-label="Next day">
+            &#8250;
+        </button>
+    </div>
+
+    <h2 id="appt-day-title" class="appt-day-title"></h2>
+
+    <div class="appt-list" id="appt-list">
+
+        <div class="appt-item" data-name="John Doe" data-status="confirmed">
+            <div class="appt-time">9:00 AM</div>
+
+            <div class="appt-info">
+                <h4>John Doe</h4>
+                <p>Routine cleaning</p>
+            </div>
+
+            <span class="appt-status confirmed">Confirmed</span>
+        </div>
+
+        <div class="appt-item" data-name="Jane Smith" data-status="pending">
+            <div class="appt-time">10:30 AM</div>
+
+            <div class="appt-info">
+                <h4>Jane Smith</h4>
+                <p>Cavity check</p>
+            </div>
+
+            <span class="appt-status pending">Pending</span>
+        </div>
+
+        <div class="appt-item" data-name="Mark Rivera" data-status="confirmed">
+            <div class="appt-time">1:00 PM</div>
+
+            <div class="appt-info">
+                <h4>Mark Rivera</h4>
+                <p>Tooth extraction follow-up</p>
+            </div>
+
+            <span class="appt-status confirmed">Confirmed</span>
+        </div>
+
+    </div>
+</div>
+
+<dialog id="appt-filter-modal" class="appt-modal">
+    <form id="appt-filter-form" class="appt-form">
+        <h3>Filter appointments</h3>
+
+        <label for="appt-filter-status">Status</label>
+
+        <select id="appt-filter-status">
+            <option value="all">All statuses</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="pending">Pending</option>
+        </select>
+
+        <div class="appt-modal-actions">
+            <button type="button" id="appt-filter-cancel">Cancel</button>
+            <button type="submit" class="appt-save-btn">Apply</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="appt-edit-modal" class="appt-modal">
+    <form id="appt-edit-form" class="appt-form">
+
+        <h3 id="appt-modal-title">Add appointment</h3>
+
+        <label for="appt-name">Patient name</label>
+        <input id="appt-name" type="text" placeholder="Enter patient name" required>
+
+        <label for="appt-date-input">Date</label>
+        <input id="appt-date-input" type="date" required>
+
+        <label for="appt-time-input">Time</label>
+        <input id="appt-time-input" type="time" required>
+
+        <label for="appt-purpose">Appointment</label>
+        <input id="appt-purpose" type="text" placeholder="e.g. Routine cleaning" required>
+
+        <label for="appt-status-input">Status</label>
+
+        <select id="appt-status-input">
+            <option value="confirmed">Confirmed</option>
+            <option value="pending">Pending</option>
+        </select>
+
+        <div class="appt-modal-actions">
+            <button type="button" id="appt-delete-btn" class="appt-delete-btn" hidden>
+                Delete
+            </button>
+
+            <span class="appt-modal-spacer"></span>
+
+            <button type="button" id="appt-edit-cancel">Cancel</button>
+
+            <button type="submit" class="appt-save-btn">Save</button>
+        </div>
+    </form>
+</dialog>
+
+<style>
+    .appointments-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .appointments-toolbar .search {
+        margin-bottom: 0;
+        width: auto;
+        flex: 1 1 auto;
+        max-width: 420px;
+    }
+
+    .appt-btn {
+        min-height: 2.25rem;
+        padding: 0.4rem 0.9rem;
+        border: 1px solid var(--border-soft, #cdece4);
+        border-radius: 0.5rem;
+        background: var(--white, #fff);
+        color: var(--text-page, #123c38);
+        font: inherit;
+        cursor: pointer;
+        flex: 0 0 auto;
+    }
+
+    .appt-btn:hover {
+        background: var(--accent-tint, #eafaf3);
+    }
+
+    .appt-btn-accent {
+        border-color: var(--accent, #0f9a9a);
+        background: var(--accent, #0f9a9a);
+        color: #fff;
+    }
+
+    .appt-day-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .appt-day-btn {
+        width: 38px;
+        height: 36px;
+        border: 1px solid var(--border-soft, #cdece4);
+        border-radius: 6px;
+        background: #fff;
+        color: var(--text-page, #123c38);
+        cursor: pointer;
+        font-size: 1.3rem;
+        line-height: 1;
+    }
+
+    .appt-day-btn:hover {
+        background: var(--accent-tint, #eafaf3);
+    }
+
+    .appt-date {
+        height: 36px;
+        border: 1px solid var(--border-soft, #cdece4);
+        border-radius: 6px;
+        padding: 5px 8px;
+        background: #fff;
+        color: var(--text-page, #123c38);
+        font: inherit;
+    }
+
+    .appt-day-title {
+        text-align: center;
+        font-size: 1.1rem;
+        margin: 0 0 14px;
+        color: var(--text-page, #123c38);
+    }
+
+    .appt-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .appt-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: var(--bg-sidebar, #fff);
+        border: 1px solid var(--border-soft, #cdece4);
+        border-radius: 8px;
+        padding: 12px 16px;
+        box-shadow: 0 1px 3px rgb(0 0 0 / 6%);
+    }
+
+    .appt-time {
+        flex: 0 0 auto;
+        min-width: 4.5rem;
+        font-weight: 700;
+        color: var(--accent, #0f9a9a);
+    }
+
+    .appt-info {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .appt-info h4 {
+        margin: 0 0 2px;
+        color: var(--text-page, #123c38);
+    }
+
+    .appt-info p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #567b76;
+    }
+
+    .appt-status {
+        flex: 0 0 auto;
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 999px;
+    }
+
+    .appt-status.confirmed {
+        background: var(--accent-tint, #eafaf3);
+        color: var(--accent, #0f9a9a);
+    }
+
+    .appt-status.pending {
+        background: #fff3d6;
+        color: #9a7300;
+    }
+
+    .appt-actions {
+        display: flex;
+        gap: 6px;
+        flex: 0 0 auto;
+    }
+
+    .appt-action-btn {
+        border: 1px solid var(--border-soft, #cdece4);
+        background: #fff;
+        color: var(--text-page, #123c38);
+        border-radius: 5px;
+        padding: 5px 9px;
+        font: inherit;
+        font-size: 0.8rem;
+        cursor: pointer;
+    }
+
+    .appt-action-btn:hover {
+        background: var(--accent-tint, #eafaf3);
+    }
+
+    .appt-action-delete {
+        border-color: #e2a5a0;
+        color: #b3392f;
+    }
+
+    .appt-action-delete:hover {
+        background: #fdeceb;
+    }
+
+    .appt-empty {
+        text-align: center;
+        color: #7c9d97;
+        padding: 30px 10px;
+    }
+
+    .appt-modal {
+        width: min(90vw, 25rem);
+        padding: 0;
+        border: 0;
+        border-radius: 0.8rem;
+        box-shadow: 0 1rem 3rem rgb(0 0 0 / 30%);
+    }
+
+    .appt-modal::backdrop {
+        background: rgb(0 0 0 / 42%);
+    }
+
+    .appt-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+        padding: 1.3rem;
+    }
+
+    .appt-form h3 {
+        margin: 0 0 0.3rem;
+        color: var(--text-page, #123c38);
+    }
+
+    .appt-form label {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--text-page, #123c38);
+    }
+
+    .appt-form input,
+    .appt-form select {
+        width: 100%;
+        border: 1px solid var(--border-soft, #cdece4);
+        border-radius: 0.4rem;
+        padding: 0.5rem;
+        font: inherit;
+        background: #fff;
+    }
+
+    .appt-modal-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.4rem;
+    }
+
+    .appt-modal-actions button {
+        border: 1px solid var(--border-soft, #cdece4);
+        background: #fff;
+        color: var(--text-page, #123c38);
+        border-radius: 0.4rem;
+        padding: 0.4rem 0.9rem;
+        cursor: pointer;
+        font: inherit;
+    }
+
+    .appt-modal-spacer {
+        flex: 1;
+    }
+
+    .appt-save-btn {
+        border-color: var(--accent, #0f9a9a) !important;
+        background: var(--accent, #0f9a9a) !important;
+        color: #fff !important;
+    }
+
+    .appt-delete-btn {
+        border-color: #e2a5a0 !important;
+        color: #b3392f !important;
+    }
+
+    .appt-delete-btn:hover {
+        background: #fdeceb !important;
+    }
+
+    @media (max-width: 700px) {
+        .appointments-toolbar {
+            flex-wrap: wrap;
+        }
+
+        .appointments-toolbar .search {
+            width: 100%;
+            max-width: none;
+            flex-basis: 100%;
+        }
+
+        .appt-btn {
+            flex: 1 1 auto;
+        }
+
+        .appt-item {
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 8px 12px;
+            padding: 12px;
+        }
+
+        .appt-time {
+            min-width: 4rem;
+        }
+
+        .appt-info {
+            flex: 1 1 calc(100% - 5rem);
+        }
+
+        .appt-status {
+            margin-left: 0;
+        }
+
+        .appt-actions {
+            width: 100%;
+            justify-content: flex-end;
+        }
+    }
+
+    @media (max-width: 450px) {
+        .appt-day-toolbar {
+            width: 100%;
+        }
+
+        .appt-date {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .appt-item {
+            flex-direction: column;
+        }
+
+        .appt-time {
+            min-width: 0;
+        }
+
+        .appt-info {
+            width: 100%;
+        }
+
+        .appt-status {
+            align-self: flex-start;
+        }
+
+        .appt-actions {
+            justify-content: flex-start;
+        }
+
+        .appt-btn {
+            width: 100%;
+        }
+
+        .appointments-toolbar {
+            gap: 8px;
+        }
+    }
+</style>
+
+<script>
+(() => {
+    const STORAGE_KEY = 'clinicAppointments';
+
+    const list = document.getElementById('appt-list');
+    const searchInput = document.getElementById('appt-search');
+
+    const filterBtn = document.getElementById('appt-filter-btn');
+    const filterModal = document.getElementById('appt-filter-modal');
+    const filterForm = document.getElementById('appt-filter-form');
+    const filterStatus = document.getElementById('appt-filter-status');
+    const filterCancel = document.getElementById('appt-filter-cancel');
+
+    const addBtn = document.getElementById('appt-add-btn');
+
+    const editModal = document.getElementById('appt-edit-modal');
+    const editForm = document.getElementById('appt-edit-form');
+    const modalTitle = document.getElementById('appt-modal-title');
+
+    const nameInput = document.getElementById('appt-name');
+    const dateInput = document.getElementById('appt-date-input');
+    const timeInput = document.getElementById('appt-time-input');
+    const purposeInput = document.getElementById('appt-purpose');
+    const statusInput = document.getElementById('appt-status-input');
+
+    const deleteBtn = document.getElementById('appt-delete-btn');
+    const editCancel = document.getElementById('appt-edit-cancel');
+
+    const datePicker = document.getElementById('appt-date');
+    const dayTitle = document.getElementById('appt-day-title');
+
+    const prevDayBtn = document.getElementById('appt-prev-day');
+    const nextDayBtn = document.getElementById('appt-next-day');
+
+    let selectedDate = getTodayKey();
+    let editingId = null;
+    let currentFilter = 'all';
+    let searchQuery = '';
+
+    function getTodayKey() {
+        const today = new Date();
+
+        return formatDateKey(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate()
+        );
+    }
+
+    function formatDateKey(year, month, day) {
+        return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
+
+    function loadAppointments() {
+        try {
+            const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+            if (Array.isArray(stored)) {
+                return stored;
+            }
+        } catch {
+            return createDefaultAppointments();
+        }
+
+        return createDefaultAppointments();
+    }
+
+    function saveAppointments(appointments) {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(appointments)
+        );
+    }
+
+    function createDefaultAppointments() {
+        const today = getTodayKey();
+
+        const defaults = [
+            {
+                id: 1,
+                name: 'John Doe',
+                date: today,
+                time: '09:00',
+                purpose: 'Routine cleaning',
+                status: 'confirmed'
+            },
+            {
+                id: 2,
+                name: 'Jane Smith',
+                date: today,
+                time: '10:30',
+                purpose: 'Cavity check',
+                status: 'pending'
+            },
+            {
+                id: 3,
+                name: 'Mark Rivera',
+                date: today,
+                time: '13:00',
+                purpose: 'Tooth extraction follow-up',
+                status: 'confirmed'
+            }
+        ];
+
+        saveAppointments(defaults);
+
+        return defaults;
+    }
+
+    function formatTime(time) {
+        const [hours, minutes] = time.split(':').map(Number);
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const hour12 = hours % 12 === 0 ? 12 : hours % 12;
+
+        return `${hour12}:${String(minutes).padStart(2, '0')} ${period}`;
+    }
+
+    function formatDayTitle(dateString) {
+        const date = new Date(dateString + 'T00:00:00');
+
+        return date.toLocaleDateString(undefined, {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    function getVisibleAppointments() {
+        const appointments = loadAppointments();
+
+        return appointments
+            .filter(appt => appt.date === selectedDate)
+            .filter(appt => {
+                if (
+                    currentFilter !== 'all' &&
+                    appt.status !== currentFilter
+                ) {
+                    return false;
+                }
+
+                if (!searchQuery) {
+                    return true;
+                }
+
+                const query = searchQuery.toLowerCase();
+
+                return (
+                    appt.name.toLowerCase().includes(query) ||
+                    appt.purpose.toLowerCase().includes(query)
+                );
+            })
+            .sort((a, b) => a.time.localeCompare(b.time));
+    }
+
+    function render() {
+        datePicker.value = selectedDate;
+        dayTitle.textContent = formatDayTitle(selectedDate);
+        list.innerHTML = '';
+
+        const appointments = getVisibleAppointments();
+
+        if (!appointments.length) {
+            const empty = document.createElement('div');
+
+            empty.className = 'appt-empty';
+            empty.textContent = 'No appointments for this day.';
+
+            list.appendChild(empty);
+            return;
+        }
+
+        appointments.forEach(appt => {
+            const item = document.createElement('div');
+
+            item.className = 'appt-item';
+
+            item.innerHTML = `
+                <div class="appt-time">
+                    ${formatTime(appt.time)}
+                </div>
+
+                <div class="appt-info">
+                    <h4>${escapeHtml(appt.name)}</h4>
+                    <p>${escapeHtml(appt.purpose)}</p>
+                </div>
+
+                <span class="appt-status ${appt.status}">
+                    ${appt.status === 'confirmed' ? 'Confirmed' : 'Pending'}
+                </span>
+
+                <div class="appt-actions">
+                    <button type="button" class="appt-action-btn appt-edit">
+                        Edit
+                    </button>
+
+                    <button type="button" class="appt-action-btn appt-action-delete appt-delete">
+                        Delete
+                    </button>
+                </div>
+            `;
+
+            item.querySelector('.appt-edit').addEventListener('click', () => {
+                openEditModal(appt);
+            });
+
+            item.querySelector('.appt-delete').addEventListener('click', () => {
+                deleteAppointment(appt.id);
+            });
+
+            list.appendChild(item);
+        });
+    }
+
+    function openAddModal() {
+        editingId = null;
+        modalTitle.textContent = 'Add appointment';
+
+        editForm.reset();
+
+        dateInput.value = selectedDate;
+        statusInput.value = 'confirmed';
+        deleteBtn.hidden = true;
+
+        editModal.showModal();
+    }
+
+    function openEditModal(appointment) {
+        editingId = appointment.id;
+        modalTitle.textContent = 'Edit appointment';
+
+        nameInput.value = appointment.name;
+        dateInput.value = appointment.date;
+        timeInput.value = appointment.time;
+        purposeInput.value = appointment.purpose;
+        statusInput.value = appointment.status;
+
+        deleteBtn.hidden = false;
+
+        editModal.showModal();
+    }
+
+    function deleteAppointment(id) {
+        const appointments = loadAppointments();
+
+        const appointment = appointments.find(
+            appt => appt.id === id
+        );
+
+        if (!appointment) {
+            return;
+        }
+
+        if (!confirm(`Delete the appointment for ${appointment.name}?`)) {
+            return;
+        }
+
+        const updated = appointments.filter(
+            appt => appt.id !== id
+        );
+
+        saveAppointments(updated);
+        render();
+    }
+
+    editForm.addEventListener('submit', event => {
+        event.preventDefault();
+
+        const appointments = loadAppointments();
+
+        const appointmentData = {
+            id: editingId ?? Date.now(),
+            name: nameInput.value.trim(),
+            date: dateInput.value,
+            time: timeInput.value,
+            purpose: purposeInput.value.trim(),
+            status: statusInput.value
+        };
+
+        if (!appointmentData.name || !appointmentData.purpose) {
+            return;
+        }
+
+        if (editingId === null) {
+            appointments.push(appointmentData);
+        } else {
+            const index = appointments.findIndex(
+                appt => appt.id === editingId
+            );
+
+            if (index !== -1) {
+                appointments[index] = appointmentData;
+            }
+        }
+
+        saveAppointments(appointments);
+
+        selectedDate = appointmentData.date;
+
+        editModal.close();
+        render();
+    });
+
+    deleteBtn.addEventListener('click', () => {
+        if (editingId !== null) {
+            deleteAppointment(editingId);
+        }
+
+        editModal.close();
+    });
+
+    editCancel.addEventListener('click', () => {
+        editModal.close();
+    });
+
+    editModal.addEventListener('click', event => {
+        if (event.target === editModal) {
+            editModal.close();
+        }
+    });
+
+    addBtn.addEventListener('click', openAddModal);
+
+    // Search
+    searchInput.addEventListener('input', () => {
+        searchQuery = searchInput.value.trim();
+        render();
+    });
+
+    // Filter
+    filterBtn.addEventListener('click', () => {
+        filterStatus.value = currentFilter;
+        filterModal.showModal();
+    });
+
+    filterCancel.addEventListener('click', () => {
+        filterModal.close();
+    });
+
+    filterForm.addEventListener('submit', event => {
+        event.preventDefault();
+
+        currentFilter = filterStatus.value;
+
+        filterModal.close();
+        render();
+    });
+
+    filterModal.addEventListener('click', event => {
+        if (event.target === filterModal) {
+            filterModal.close();
+        }
+    });
+
+    // Day navigation
+    function changeDay(amount) {
+        const date = new Date(
+            selectedDate + 'T00:00:00'
+        );
+
+        date.setDate(date.getDate() + amount);
+
+        selectedDate = formatDateKey(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
+        );
+
+        searchInput.value = '';
+        searchQuery = '';
+
+        render();
+    }
+
+    prevDayBtn.addEventListener('click', () => {
+        changeDay(-1);
+    });
+
+    nextDayBtn.addEventListener('click', () => {
+        changeDay(1);
+    });
+
+    datePicker.addEventListener('change', () => {
+        if (!datePicker.value) {
+            return;
+        }
+
+        selectedDate = datePicker.value;
+
+        render();
+    });
+
+    function escapeHtml(value) {
+        return String(value ?? '').replace(
+            /[&<>"']/g,
+            character => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[character])
+        );
+    }
+
+    render();
+})();
+</script>
