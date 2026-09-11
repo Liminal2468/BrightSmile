@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — Bright Smile Dental Clinic</title>
+    <link rel="stylesheet" href="ClinicSystem.css"/>
+    <style>
+        .login-body {
+            height: 100%;
+            overflow-y: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f2fbf9;
+            padding: 20px;
+        }
+
+        .login-card {
+            width: min(90vw, 26rem);
+            background: #ffffff;
+            border: 1px solid #cdece4;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1rem 3rem rgb(0 0 0 / 10%);
+        }
+
+        .login-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: #0f9a9a;
+            margin-bottom: 4px;
+        }
+
+        .login-brand svg {
+            width: 38px;
+            height: 38px;
+        }
+
+        .login-brand h1 {
+            font-size: 1.15rem;
+            color: #123c38;
+            text-align: center;
+        }
+
+        .login-sub {
+            text-align: center;
+            color: #567b76;
+            font-size: 0.88rem;
+            margin-bottom: 1.3rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .login-form label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #567b76;
+        }
+
+        .login-form input {
+            width: 100%;
+            border: 1px solid #cdece4;
+            border-radius: 6px;
+            padding: 0.6rem 0.7rem;
+            font: inherit;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #4fd6d6;
+            box-shadow: 0 0 0 3px rgb(79 214 214 / 20%);
+        }
+
+        .login-error {
+            background: #fdeceb;
+            color: #b3392f;
+            font-size: 0.85rem;
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+
+        .login-btn {
+            margin-top: 6px;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 6px;
+            background: #0f9a9a;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            filter: brightness(0.95);
+        }
+
+        .login-hint {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 0.78rem;
+            color: #7c9d97;
+        }
+    </style>
+</head>
+<body class="login-body">
+    <div class="login-card">
+        <div class="login-brand">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3H8"/><path d="M14.586 11.414 22 4"/><path d="M15 11a8 8 0 01-.429.4"/><path d="m2 22 7-7c1.857-1.857 3.714-1.99 5.571-3.6l-1.985-1.986A2 2 0 0114 6a2 2 0 012-2 2 2 0 013.262-1.552l2.152 2.138"/><path d="M20 15v4"/><path d="M22 17h-4"/><path d="M4 5v4"/><path d="M6 7H2"/><path d="M9 2v2"/></svg>
+            <h1>Bright Smile Dental Clinic</h1>
+        </div>
+        <p class="login-sub">Sign in to manage records, appointments, and schedules</p>
+
+        <form id="login-form" class="login-form">
+            <label for="login-username">Username</label>
+            <input id="login-username" type="text" autocomplete="username" required>
+
+            <label for="login-password">Password</label>
+            <input id="login-password" type="password" autocomplete="current-password" required>
+
+            <p id="login-error" class="login-error" hidden>Incorrect username or password.</p>
+
+            <button type="submit" class="login-btn">Sign In</button>
+        </form>
+    </div>
+
+    <script src="login.js" defer></script>
+</body>
+</html>
